@@ -18,4 +18,3 @@ As computer science majors, we were keen on exploring the intersection of hardwa
 
 ## Demo
 
-https://drive.google.com/file/d/1TVGaBNMQqEKxUy0entRMvsJB0SbzZSeA/view?usp=sharing
