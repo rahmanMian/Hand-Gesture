@@ -11,12 +11,13 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from statistics import mode
 
 # Function to load the data from JSON files
 def load_data(direction, num_files):
     dfs = []
     for i in range(num_files):
-        file_name = f'{direction}_{i}.log'
+        file_name = f'{direction}_{i}.json'
 
         with open(file_name, 'r') as f:
             data = json.load(f)
@@ -84,7 +85,7 @@ def predict_direction_from_json(json_file_path, clf):
 
     # Get the index of the maximum value in the predicted label array
     print((y_pred))
-    direction_index = int(np.mean(y_pred))
+    direction_index = mode(y_pred.tolist())
     print(direction_index)
     # Map the index to the corresponding direction string
     if direction_index == 0:
@@ -116,7 +117,7 @@ def predict():
     # Get the JSON file path from the query parameters
   # Process the JSON file path and return it as plain text
     print("yo")
-    return predict_direction_from_json("testing_0.json", clf)
+    return predict_direction_from_json("testing.json", clf)
 
 if __name__ == '__main__':
       app.run() 
