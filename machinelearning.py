@@ -5,6 +5,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from flask import Flask, render_template
+import json
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 # Function to load the data from JSON files
 def load_data(direction, num_files):
@@ -20,16 +26,16 @@ def load_data(direction, num_files):
     return pd.concat(dfs)
 
 # Load the data from all the JSON files
-left_df = load_data('left', 9)
-up_df = load_data('up', 9)
-right_df = load_data('right', 9)
-down_df = load_data('down', 9)
+left_df = load_data('left', 4)
+up_df = load_data('up', 4)
+right_df = load_data('right', 4)
+down_df = load_data('down', 4)
 
 # Add a direction column to each DataFrame
-left_df['direction'] = 1
-up_df['direction'] = 0
-right_df['direction'] = 0
-down_df['direction'] = 1
+left_df['direction'] = 0
+up_df['direction'] = 1
+right_df['direction'] = 2
+down_df['direction'] = 3
 
 # Combine the data into one DataFrame
 df = pd.concat([left_df, up_df, right_df, down_df])
@@ -39,7 +45,7 @@ X = df[['acce_x', 'acce_y', 'acce_z', 'gyro_x', 'gyro_y', 'gyro_z']]
 y = df['direction']
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train a Decision Tree Classifier
 clf = DecisionTreeClassifier(random_state=42)
@@ -52,7 +58,6 @@ print('Accuracy:', accuracy_score(y_test, y_pred))
 print('Precision:', precision_score(y_test, y_pred, average='weighted'))
 print('Recall:', recall_score(y_test, y_pred, average='weighted'))
 print('F1 Score:', f1_score(y_test, y_pred, average='weighted'))
-
 
 def predict_direction_from_json(json_file_path, clf):
     # Read the entire file as a string
@@ -78,14 +83,21 @@ def predict_direction_from_json(json_file_path, clf):
     y_pred = clf.predict(X)
 
     # Get the index of the maximum value in the predicted label array
-    direction_index = np.argmax(y_pred)
-
+    print((y_pred))
+    direction_index = int(np.mean(y_pred))
+    print(direction_index)
     # Map the index to the corresponding direction string
     if direction_index == 0:
-        predicted_direction = 'MOVEMENT IN HORIZONTAL PLANE'
+       predicted_direction = 'movement in left plane'
     elif direction_index == 1:
-        predicted_direction = 'MOVEMENT IN VERTICAL PLANE'
+       predicted_direction = 'movement in up plan'
+    elif direction_index == 2:
+       predicted_direction = 'movement in right plan'
+    else:
+       predicted_direction = 'movement in down plan'
 
+
+    print("predicted", predicted_direction)
     return predicted_direction
 
 
@@ -104,7 +116,7 @@ def predict():
     # Get the JSON file path from the query parameters
   # Process the JSON file path and return it as plain text
     print("yo")
-    return predict_direction_from_json("testing.json", clf)
+    return predict_direction_from_json("testing_0.json", clf)
 
 if __name__ == '__main__':
       app.run() 
