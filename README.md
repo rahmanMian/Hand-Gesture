@@ -17,4 +17,4 @@ As computer science majors, we were keen on exploring the intersection of hardwa
 
 
 ## Demo
-
+https://github.com/rahmanMian/ML-Hand-Movement-Project/blob/main/528%20-%20Presentation.mp4
